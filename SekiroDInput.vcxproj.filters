@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{a9df1716-3d96-4234-8399-7ed397d5367e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui Custom">
+      <UniqueIdentifier>{56af979b-1b81-4974-bdf3-e7a6d33f5e4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Profiles">
+      <UniqueIdentifier>{25db074f-a44b-4d31-bde5-841d8bd3ab4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Configs">
+      <UniqueIdentifier>{38bbab1a-dd14-4165-b01f-04945a37a438}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory Scanner">
+      <UniqueIdentifier>{355cc95b-60a4-4c13-939e-8a149ab67513}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dinput8">
+      <UniqueIdentifier>{84e3215e-f4d6-48dd-8af8-62b92df647e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui Menus">
+      <UniqueIdentifier>{a6939327-abe5-469e-9567-0910cb1cc05a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hooks">
+      <UniqueIdentifier>{c8c8a6d8-ee3c-4be8-9f7c-0e3f2096fe86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MinHook">
+      <UniqueIdentifier>{e5776563-dff7-4775-bc89-cacee039d468}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Inputs">
+      <UniqueIdentifier>{50c99570-ec47-47e9-8fb5-3cffdbb05821}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dxgi">
+      <UniqueIdentifier>{cbf55ca3-ce7a-4d3b-b907-69998ad40b14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Functionality">
+      <UniqueIdentifier>{e53078f4-da9d-4947-9a7c-eea4eb1519a7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="imgui\imconfig.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_dx11.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_win32.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_internal.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_rectpack.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_textedit.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_truetype.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\aobscanner.h">
+      <Filter>Memory Scanner</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\dllmain.h">
+      <Filter>dinput8</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\imgui_hotkey.h">
+      <Filter>ImGui Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\MinHook.h">
+      <Filter>MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\imgui_menu.h">
+      <Filter>ImGui Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\config_menu.h">
+      <Filter>ImGui Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\widget_menu.h">
+      <Filter>ImGui Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\functions.h">
+      <Filter>Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\profiles.h">
+      <Filter>Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\configs.h">
+      <Filter>Configs</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\input_injection.h">
+      <Filter>Inputs</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\input_processing.h">
+      <Filter>Inputs</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\gamekey.h">
+      <Filter>Inputs</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\dxgi_inject.h">
+      <Filter>dxgi</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\imgui_main.h">
+      <Filter>ImGui Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\wndproc.h">
+      <Filter>Inputs</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\data.h">
+      <Filter>Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\combatarts.h">
+      <Filter>Functionality</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\prosthetics.h">
+      <Filter>Functionality</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="imgui\imgui.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_demo.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_win32.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_tables.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\aobscanner.cpp">
+      <Filter>Memory Scanner</Filter>
+    </ClCompile>
+    <ClCompile Include="source\dllmain.cpp">
+      <Filter>dinput8</Filter>
+    </ClCompile>
+    <ClCompile Include="source\imgui_hotkey.cpp">
+      <Filter>ImGui Custom</Filter>
+    </ClCompile>
+    <ClCompile Include="source\imgui_menu.cpp">
+      <Filter>ImGui Custom</Filter>
+    </ClCompile>
+    <ClCompile Include="source\config_menu.cpp">
+      <Filter>ImGui Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="source\widget_menu.cpp">
+      <Filter>ImGui Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="source\functions.cpp">
+      <Filter>Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="source\profiles.cpp">
+      <Filter>Profiles</Filter>
+    </ClCompile>
+    <ClCompile Include="source\configs.cpp">
+      <Filter>Configs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\input_injection.cpp">
+      <Filter>Inputs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\input_processing.cpp">
+      <Filter>Inputs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\dxgi_inject.cpp">
+      <Filter>dxgi</Filter>
+    </ClCompile>
+    <ClCompile Include="source\imgui_main.cpp">
+      <Filter>ImGui Custom</Filter>
+    </ClCompile>
+    <ClCompile Include="source\data.cpp">
+      <Filter>Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="source\combatarts.cpp">
+      <Filter>Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="source\prosthetics.cpp">
+      <Filter>Functionality</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
