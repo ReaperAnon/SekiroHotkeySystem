@@ -49,8 +49,7 @@ void LoadDll()
     if (wcslen(dllPath) > 0)
     {
         DInput8DLL = LoadLibrary(dllPath);
-        if (DInput8DLL > (HMODULE)31)
-            DirectInput8CreateOrig = (tDirectInput8Create)GetProcAddress(DInput8DLL, "DirectInput8Create");
+        DirectInput8CreateOrig = (tDirectInput8Create)GetProcAddress(DInput8DLL, "DirectInput8Create");
     }
 
     if (DirectInput8CreateOrig == nullptr)
@@ -58,8 +57,7 @@ void LoadDll()
         GetSystemDirectory(dllPath, MAX_PATH);
         wcscat_s(dllPath, L"\\dinput8.dll");
         DInput8DLL = LoadLibrary(dllPath);
-        if (DInput8DLL > (HMODULE)31)
-            DirectInput8CreateOrig = (tDirectInput8Create)GetProcAddress(DInput8DLL, "DirectInput8Create");
+        DirectInput8CreateOrig = (tDirectInput8Create)GetProcAddress(DInput8DLL, "DirectInput8Create");
     }
 }
 

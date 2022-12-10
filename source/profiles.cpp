@@ -57,9 +57,6 @@ void Profiles::DeleteProfile(unsigned slotIdx)
     for (const auto& entry : std::filesystem::directory_iterator(std::filesystem::current_path() / "profiles"))
         paths.push_back(entry.path());
 
-    if (paths.empty())
-        return;
-
     for (const auto& entry : paths)
     {
         if (GetProfileIndex(entry) == slotIdx)
@@ -68,9 +65,6 @@ void Profiles::DeleteProfile(unsigned slotIdx)
             break;
         }
     }
-
-    if (paths.size() - 1 <= 0)
-        return;
 
     std::filesystem::path profilesDir = std::filesystem::current_path() / "profiles";
     for (const auto& entry : paths)

@@ -155,18 +155,19 @@ const std::string ImGui::GetKeyName(Input::ImGuiKeySet keyID)
 	return displayName;
 }
 
-bool ImGui::KeyPressBehavior(const bool hovered, bool* focusForceReleased, bool* isMouseActivation)
+bool ImGui::KeyPressBehavior(const bool isHovered, const bool isSelected, bool* focusReleasedWithNav, bool* isMouseActivation)
 {
 	static bool waitForRelease = false;
-	if (!hovered)
+	if (!isSelected && !isHovered)
 	{
+		*focusReleasedWithNav = false;
 		waitForRelease = false;
 		return false;
 	}
 
-	if (IsKeyDown(ImGuiKey_MouseLeft) || IsKeyDown(ImGuiKey_Space) || IsKeyDown(ImGuiKey_NavGamepadActivate))
+	if ((isHovered && IsKeyDown(ImGuiKey_MouseLeft)) || (isSelected && (IsKeyDown(ImGuiKey_Space) || IsKeyDown(ImGuiKey_NavGamepadActivate))))
 	{
-		if (IsKeyDown(ImGuiKey_MouseLeft))
+		if (isHovered && IsKeyDown(ImGuiKey_MouseLeft))
 			*isMouseActivation = true;
 
 		waitForRelease = true;
@@ -175,9 +176,9 @@ bool ImGui::KeyPressBehavior(const bool hovered, bool* focusForceReleased, bool*
 
 	if(waitForRelease)
 	{
-		if (*focusForceReleased)
+		if (*focusReleasedWithNav)
 		{
-			*focusForceReleased = false;
+			*focusReleasedWithNav = false;
 			waitForRelease = false;
 			return false;
 		}
@@ -209,25 +210,27 @@ bool ImGui::Hotkey(const char* label, Input::ImGuiKeySet* keysToSet, const ImVec
 	if (!ImGui::ItemAdd(total_bb, id))
 		return false;
 
-	static bool isMouseActivation = false;
-	static bool focusForceReleased = false;
-	const bool hovered = ItemHoverable(frame_bb, id);
-	const bool pressed = KeyPressBehavior((hovered || imguiContext.NavId == id) && imguiContext.ActiveId != id, &focusForceReleased, &isMouseActivation);
-	if (hovered)
-	{
-		ImGui::SetHoveredID(id);
-	}
-
 	static int keysPressed = 0;
 	static bool keyStates[ImGuiKey_NamedKey_COUNT];
-	if (pressed)
+
+	static bool isMouseActivation = false;
+	static bool focusReleasedWithNav = false;
+	const bool hovered = ItemHoverable(frame_bb, id);
+	if (imguiContext.ActiveId != id && (hovered || imguiContext.NavId == id))
 	{
-		keysPressed = 0;
-		ImGui::SetActiveID(id, window);
-		ImGui::FocusWindow(window);
-		memset(keyStates, 0, sizeof(keyStates));
-		io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableGamepad;
-		io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableKeyboard;
+		if (hovered)
+			imguiContext.NavId = id;
+
+		const bool pressed = KeyPressBehavior(hovered, imguiContext.NavId == id, &focusReleasedWithNav, &isMouseActivation);
+		if (pressed)
+		{
+			keysPressed = 0;
+			ImGui::SetActiveID(id, window);
+			ImGui::FocusWindow(window);
+			memset(keyStates, 0, sizeof(keyStates));
+			io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableGamepad;
+			io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableKeyboard;
+		}
 	}
 
 	bool wasChanged = false;
@@ -257,7 +260,7 @@ bool ImGui::Hotkey(const char* label, Input::ImGuiKeySet* keysToSet, const ImVec
 					}
 
 					if(newKeys.key1 == ImGuiKey_MouseLeft || newKeys.key2 == ImGuiKey_MouseLeft || newKeys.key1 == ImGuiKey_Space || newKeys.key2 == ImGuiKey_Space || newKeys.key1 == ImGuiKey_NavGamepadActivate || newKeys.key2 == ImGuiKey_NavGamepadActivate)
-						focusForceReleased = true;
+						focusReleasedWithNav = true;
 
 					*keysToSet = newKeys;
 					wasChanged = true;

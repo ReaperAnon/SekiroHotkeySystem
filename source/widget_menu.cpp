@@ -36,7 +36,7 @@ std::string WidgetMenu::GetNameFromRealID(unsigned realID)
     if (txtPtr == 0)
         return "EMPTY";
 
-    std::wstring stringToConvert = std::wstring((const wchar_t*)txtPtr);
+    std::wstring stringToConvert = std::wstring(reinterpret_cast<const wchar_t*>(txtPtr));
     if (stringToConvert.empty()) return std::string();
 
     int strSize = WideCharToMultiByte(CP_UTF8, 0, &stringToConvert[0], (int)stringToConvert.size(), NULL, 0, NULL, NULL);

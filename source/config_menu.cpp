@@ -253,9 +253,9 @@ bool ConfigMenu::ShowConfigMenu()
             ImGui::End();
         }
 
-        return true;
+        return IsConfigOpenVar;
     }
 
     IsConfigStyleApplied = false;
-    return showMenu;
+    return IsConfigOpenVar;
 }

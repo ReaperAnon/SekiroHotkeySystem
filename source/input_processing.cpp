@@ -8,6 +8,8 @@ Input::ImGuiKeySet Input::ProstheticKeys[3];
 
 Input::ImGuiKeySet Input::CombatArtKey;
 
+std::vector<Input::GameKey*> Input::MenuKeys;
+
 std::vector<Input::GameKey*> Input::GameKeys;
 
 HWND Input::PROCHWND;
@@ -40,11 +42,9 @@ void Input::InputProcessThread(void* args)
     }
 }
 
-void Input::ProcessKeyEvents()
+void Input::ProcessInputArray(std::vector<Input::GameKey*>* inputArray)
 {
-    if (GetForegroundWindow() != Input::PROCHWND) return;
-
-    for (auto gameKey : GameKeys)
+    for (auto gameKey : *inputArray)
     {
         bool isKeyPressed = (gameKey->KeyParams.key1 != ImGuiKey_None && gameKey->KeyParams.key2 == ImGuiKey_None) ? ImGui::IsKeyDown(gameKey->KeyParams.key1) : (gameKey->KeyParams.key1 != ImGuiKey_None && gameKey->KeyParams.key2 != ImGuiKey_None) ? (ImGui::IsKeyDown(gameKey->KeyParams.key1) && ImGui::IsKeyDown(gameKey->KeyParams.key2)) : false;
         if (isKeyPressed)
@@ -53,7 +53,7 @@ void Input::ProcessKeyEvents()
                 continue;
 
             InputBlocks[gameKey->KeyParams.key1 - 512] = 1;
-            if(gameKey->KeyParams.key2 != ImGuiKey_None)
+            if (gameKey->KeyParams.key2 != ImGuiKey_None)
                 InputBlocks[gameKey->KeyParams.key2 - 512] = 1;
 
             if (gameKey->isPressed)
@@ -78,6 +78,23 @@ void Input::ProcessKeyEvents()
                 gameKey->PerformReleaseAction(gameKey->ReleaseArgs);
         }
     }
+
+}
+
+void Input::ProcessKeyEvents()
+{
+    if (GetForegroundWindow() != Input::PROCHWND)
+        return;
+
+    if (!Hooks::IsGameLoaded())
+        return;
+
+    ProcessInputArray(&MenuKeys);
+
+    if (ConfigMenu::IsConfigOpen())
+        return;
+
+    ProcessInputArray(&GameKeys);
 }
 
 BOOL CALLBACK Input::WorkerProc(HWND hwnd, LPARAM lParam)

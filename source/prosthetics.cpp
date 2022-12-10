@@ -37,9 +37,6 @@ void ProstheticFunctions::TrySelectProsthetics(void* idx)
 
 void ProstheticFunctions::QueueSelectProsthetics(void* idx)
 {
-    if (Hooks::GetCharacterBase() == 0)
-        return;
-
     bool wasChanged = false;
     IsProstheticThreadRunning = true;
     while (!SelectProstheticGroup(idx, &wasChanged))
@@ -65,9 +62,8 @@ bool ProstheticFunctions::SelectProstheticGroup(void* idx, bool* wasChanged)
 {
     bool result = true;
     uint64_t skillBase = Hooks::GetSkillBase();
-    uint64_t characterBase = Hooks::GetCharacterBase();
 
-    if (skillBase == 0 || characterBase == 0) // exit if not in-game
+    if (skillBase == 0) // exit if not in-game
         return false;
 
     short prostheticIdx = *reinterpret_cast<short*>(idx);
@@ -124,8 +120,7 @@ bool ProstheticFunctions::SelectProstheticGroup(void* idx, bool* wasChanged)
 void ProstheticFunctions::SelectProsthetic(void* idx)
 {
     uint64_t skillBase = Hooks::GetSkillBase();
-    uint64_t characterBase = Hooks::GetCharacterBase();
-    if (skillBase == 0 || characterBase == 0 || Hooks::IsInMenu()) // exit if not in-game
+    if (Hooks::IsInMenu() || skillBase == 0) // exit if not in-game
         return;
 
     short index = *reinterpret_cast<short*>(idx);
@@ -144,6 +139,7 @@ void ProstheticFunctions::SelectProsthetic(void* idx)
     if (index < 0)
         index = 2;
 
+    uint64_t characterBase = Hooks::GetCharacterBase();
     Hooks::SetEquippedProsthetic(*reinterpret_cast<uint64_t**>(characterBase + 0x10), 0, index);
     Input::SekiroInputAction switchProsthetic = Input::SIA_SwitchProsthetic;
     Input::AddSinglePressInput(&switchProsthetic);

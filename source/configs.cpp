@@ -77,6 +77,15 @@ void Configs::ReadConfigFile()
     keySet.key2 = (ImGuiKey)GetPrivateProfileInt(L"Prosthetics", L"Key22", 0, configName);
     Input::ProstheticKeys[2] = keySet;
 
+    Input::GameKey* escapeKey = new Input::GameKey({ ImGuiKey_Escape, ImGuiKey_None }, ConfigMenu::QuitConfigMenu);
+    Input::MenuKeys.push_back(escapeKey);
+
+    Input::GameKey* openKey = new Input::GameKey({ ImGuiKey_Tab, ImGuiKey_None }, ConfigMenu::OpenConfigMenu);
+    Input::MenuKeys.push_back(openKey);
+
+    Input::GameKey* openKeyGamepad = new Input::GameKey({ ImGuiKey_GamepadBack, ImGuiKey_None }, ConfigMenu::OpenConfigMenu);
+    Input::MenuKeys.push_back(openKeyGamepad);
+
     ReloadSettings();
 }
 
@@ -142,15 +151,6 @@ void Configs::ReloadSettings()
 {
     // Clear Keys
     Input::GameKeys.clear();
-
-    Input::GameKey* escapeKey = new Input::GameKey({ ImGuiKey_Escape, ImGuiKey_None }, ConfigMenu::QuitConfigMenu);
-    Input::GameKeys.push_back(escapeKey);
-
-    Input::GameKey* openKey = new Input::GameKey({ ImGuiKey_Tab, ImGuiKey_None }, ConfigMenu::OpenConfigMenu);
-    Input::GameKeys.push_back(openKey);
-
-    Input::GameKey* openKeyGamepad = new Input::GameKey({ ImGuiKey_GamepadBack, ImGuiKey_None }, ConfigMenu::OpenConfigMenu);
-    Input::GameKeys.push_back(openKeyGamepad);
 
     // Combat Arts
     CAFunctions::PerformArraySetup(Input::CombatArtKeys.size());

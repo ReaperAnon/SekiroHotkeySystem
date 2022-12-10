@@ -19,6 +19,8 @@ namespace Input
 
 	extern ImGuiKeySet CombatArtKey;
 
+	extern std::vector<Input::GameKey*> MenuKeys;
+
 	extern std::vector<Input::GameKey*> GameKeys;
 
 
@@ -27,6 +29,8 @@ namespace Input
 	void UninitInputProcessing();
 
 	void InputProcessThread(void* args);
+
+	void ProcessInputArray(std::vector<Input::GameKey*>* inputArray);
 
 	void ProcessKeyEvents();
 

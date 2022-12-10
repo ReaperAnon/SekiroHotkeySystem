@@ -78,9 +78,6 @@ void CAFunctions::TrySelectCombatArt(void* idx)
 
 void CAFunctions::QueueSelectCombatArt(void* idx)
 {
-    if (Hooks::GetCharacterBase() == 0)
-        return;
-
     IsCombatArtThreadRunning = true;
     while (!SelectCombatArt(idx))
         Sleep(20);
