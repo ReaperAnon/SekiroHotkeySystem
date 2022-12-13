@@ -147,6 +147,14 @@ void Configs::SaveConfigFile()
     configFile.close();
 }
 
+bool Configs::GameKeyCompare(const Input::GameKey* gameKey1, const Input::GameKey* gameKey2)
+{
+    int keyOneParams = (gameKey1->KeyParams.key1 != ImGuiKey_None) + (gameKey1->KeyParams.key2 != ImGuiKey_None) + (gameKey1->ModKeyParam != ImGuiKey_None);
+    int keyTwoParams = (gameKey2->KeyParams.key1 != ImGuiKey_None) + (gameKey2->KeyParams.key2 != ImGuiKey_None) + (gameKey2->ModKeyParam != ImGuiKey_None);
+
+    return keyOneParams > keyTwoParams;
+}
+
 void Configs::ReloadSettings()
 {
     // Clear Keys
@@ -217,4 +225,6 @@ void Configs::ReloadSettings()
     newKey = new Input::GameKey(Input::ProstheticKeys[2], ProstheticFunctions::SelectProsthetic);
     newKey->PressArgs = new short(2);
     Input::GameKeys.push_back(newKey);
+
+    std::sort(Input::GameKeys.begin(), Input::GameKeys.end(), GameKeyCompare);
 }

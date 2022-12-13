@@ -12,5 +12,7 @@ namespace Configs
 
 	void SaveConfigFile();
 
+	bool GameKeyCompare(const Input::GameKey* gameKey1, const Input::GameKey* gameKey2);
+
 	void ReloadSettings();
 }
