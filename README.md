@@ -7,4 +7,4 @@ Hotkey system for Sekiro to allow seamlessly switching between moves.
 #### CreamyRaccoon - Testing
 #### Dolphin - Existing
 #### ImGui
-#### Athelas Font
+#### NotoSans Font
