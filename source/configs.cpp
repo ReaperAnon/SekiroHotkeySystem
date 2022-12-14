@@ -49,9 +49,9 @@ void Configs::ReadConfigFile()
 
     ProstheticFunctions::ProstheticSetSize = Input::ProstheticSetKeys.size();
 
-    GetPrivateProfileString(L"Menu", L"configScale", L"1.1", inputBuffer, 50, configName);
+    GetPrivateProfileString(L"Menu", L"configScale", L"0.6", inputBuffer, 50, configName);
     ConfigMenu::ConfigScale = std::stof(inputBuffer);
-    GetPrivateProfileString(L"Menu", L"widgetScale", L"1.4", inputBuffer, 50, configName);
+    GetPrivateProfileString(L"Menu", L"widgetScale", L"0.8", inputBuffer, 50, configName);
     WidgetMenu::WidgetSettings.widgetScale = std::stof(inputBuffer);
     WidgetMenu::WidgetSettings.showHotkeys = GetPrivateProfileInt(L"Menu", L"widgetDisplayKey", 1, configName);
     WidgetMenu::WidgetSettings.widgetMode = GetPrivateProfileInt(L"Menu", L"widgetMode", 0, configName);

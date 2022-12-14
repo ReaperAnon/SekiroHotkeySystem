@@ -17,6 +17,7 @@ const char* UsageModes[]
 
 const char* WidgetModes[]
 {
+    "Off",
     "List",
     "Highlight",
     "Minimalistic",
@@ -210,9 +211,12 @@ bool ConfigMenu::ShowConfigMenu()
                             ImGui::Spacing();
                             ImGui::Separator();
 
-                            if (ImGui::ListBox("Widget Mode", &WidgetMenu::WidgetSettings.widgetMode, WidgetModes, 5))
+                            ImGui::Spacing();
+                            ImGui::Text("Widget Display Mode");
+                            ImGui::Spacing();
+                            if (ImGui::ListBox("Modes", &WidgetMenu::WidgetSettings.widgetMode, WidgetModes, 6))
                             {
-                                if (WidgetMenu::WidgetSettings.widgetMode == 0)
+                                if (WidgetMenu::WidgetSettings.widgetMode == 1)
                                     WidgetMenu::WidgetSettings.widgetPosition = 0;
                             }
                             ImGui::Spacing();
@@ -220,8 +224,8 @@ bool ConfigMenu::ShowConfigMenu()
 
                             if (ImGui::ListBox("Widget Position", &WidgetMenu::WidgetSettings.widgetPosition, WidgetPosition, 3))
                             {
-                                if (WidgetMenu::WidgetSettings.widgetPosition > 0 && WidgetMenu::WidgetSettings.widgetMode == 0)
-                                    WidgetMenu::WidgetSettings.widgetMode = 1;
+                                if (WidgetMenu::WidgetSettings.widgetPosition > 0 && WidgetMenu::WidgetSettings.widgetMode == 1)
+                                    WidgetMenu::WidgetSettings.widgetMode = 2;
                             }
                             ImGui::Spacing();
                             ImGui::Separator();

@@ -68,10 +68,13 @@ void WidgetMenu::UpdateCombatArtNames()
 
 void WidgetMenu::ShowWidgetMenu()
 {
+    if (WidgetSettings.widgetMode == 0)
+        return;
+
     if (!Hooks::IsGameLoaded())
         return;
 
-    if (WidgetSettings.widgetMode == 0 && CAFunctions::IsArrayEmpty())
+    if (WidgetSettings.widgetMode == 1 && CAFunctions::IsArrayEmpty())
         return;
 
     if (Hooks::IsHUDVisible())
@@ -93,7 +96,7 @@ void WidgetMenu::ShowWidgetMenu()
         windowFlags |= ImGuiWindowFlags_NoTitleBar;
         windowFlags |= ImGuiWindowFlags_NoScrollbar;
         windowFlags |= ImGuiWindowFlags_NoMove;
-        if (WidgetSettings.widgetMode > 2)
+        if (WidgetSettings.widgetMode > 3)
             windowFlags |= ImGuiWindowFlags_NoBackground;
 
         if (WidgetSettings.widgetPosition == 0)
@@ -103,7 +106,7 @@ void WidgetMenu::ShowWidgetMenu()
         }
         else if (WidgetSettings.widgetPosition == 1)
         {
-            ImVec2 widgetPos = ImGui::GetScaledScreenCoord(ImVec2(1515, WidgetSettings.widgetMode > 2 ? 1015 : 1030));
+            ImVec2 widgetPos = ImGui::GetScaledScreenCoord(ImVec2(1515, WidgetSettings.widgetMode > 3 ? 1015 : 1030));
             ImGui::SetNextWindowPos(widgetPos, ImGuiCond_Always);
         }
         else
@@ -116,7 +119,7 @@ void WidgetMenu::ShowWidgetMenu()
             return;
 
         unsigned currentMenuID = *reinterpret_cast<unsigned*>(Hooks::GetSkillBase() + 0x28);
-        if (WidgetSettings.widgetMode == 0)
+        if (WidgetSettings.widgetMode == 1)
         {
             for (int i = 0; i < CombatArtNames.size(); i++)
             {
@@ -127,7 +130,7 @@ void WidgetMenu::ShowWidgetMenu()
                     ImGui::Separator();
             }
         }
-        else if (WidgetSettings.widgetMode == 1 || WidgetSettings.widgetMode == 3)
+        else if (WidgetSettings.widgetMode == 2 || WidgetSettings.widgetMode == 4)
         {
             unsigned realID = GetRealIDFromMenuID(currentMenuID);
             std::string artName = GetNameFromRealID(realID);
@@ -149,21 +152,21 @@ void WidgetMenu::ShowWidgetMenu()
         }
         else
         {
-            if (ImGui::BeginTable("caWidgetTable", CombatArtNames.size(), WidgetSettings.widgetMode > 2 ? ImGuiTableFlags_NoBordersInBody : ImGuiTableFlags_Borders))
+            if (ImGui::BeginTable("caWidgetTable", CombatArtNames.size(), WidgetSettings.widgetMode > 3 ? ImGuiTableFlags_NoBordersInBody : ImGuiTableFlags_Borders))
             {
                 for (int i = 0; i < CombatArtNames.size(); i++)
                 {
                     ImGui::TableNextColumn();
                     if (WidgetSettings.showHotkeys)
                     {
-                        ImVec4 textColor = CAFunctions::CombatArts[i] == currentMenuID ? WidgetSettings.widgetColor == 1 ? ImVec4(0.51f, 0.251f, 0.196f, 1.f) : ImGui::GetCurrentContext()->Style.Colors[ImGuiCol_Text] : WidgetSettings.widgetMode == 3 ? ImVec4(0.247f, 0.255f, 0.251f, 1.f) : ImGui::GetCurrentContext()->Style.Colors[ImGuiCol_TextDisabled];
+                        ImVec4 textColor = CAFunctions::CombatArts[i] == currentMenuID ? WidgetSettings.widgetColor == 1 ? ImVec4(0.51f, 0.251f, 0.196f, 1.f) : ImGui::GetCurrentContext()->Style.Colors[ImGuiCol_Text] : WidgetSettings.widgetMode == 4 ? ImVec4(0.247f, 0.255f, 0.251f, 1.f) : ImGui::GetCurrentContext()->Style.Colors[ImGuiCol_TextDisabled];
                         ImGui::TextColored(textColor, ImGui::GetKeyName(Input::CombatArtKeys[i]).c_str());
                     }
                     else
                     {
                         ImGui::Text("     ");
                         ImDrawList* drawList = ImGui::GetForegroundDrawList();
-                        ImVec4 circleColor = CAFunctions::CombatArts[i] == currentMenuID ? WidgetSettings.widgetColor == 1 ? ImVec4(0.51f, 0.251f, 0.196f, 1.f) : ImGui::GetCurrentContext()->Style.Colors[ImGuiCol_Text] : WidgetSettings.widgetMode == 3 ? ImVec4(0.247f, 0.255f, 0.251f, 1.f) : ImGui::GetCurrentContext()->Style.Colors[ImGuiCol_TextDisabled];
+                        ImVec4 circleColor = CAFunctions::CombatArts[i] == currentMenuID ? WidgetSettings.widgetColor == 1 ? ImVec4(0.51f, 0.251f, 0.196f, 1.f) : ImGui::GetCurrentContext()->Style.Colors[ImGuiCol_Text] : WidgetSettings.widgetMode == 4 ? ImVec4(0.247f, 0.255f, 0.251f, 1.f) : ImGui::GetCurrentContext()->Style.Colors[ImGuiCol_TextDisabled];
                         ImVec2 circlePos = ImGui::TableGetCellBgRect(ImGui::GetCurrentTable(), i).GetCenter();
                         static float circleHeight;
                         if (i > 0)

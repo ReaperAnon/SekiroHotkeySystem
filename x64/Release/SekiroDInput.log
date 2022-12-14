@@ -1,8 +1,10 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(496,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+  config_menu.cpp
   configs.cpp
 C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\source\configs.cpp(30,61): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\source\configs.cpp(50,77): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\source\configs.cpp(164,63): warning C4267: 'argument': conversion from 'size_t' to 'const unsigned int', possible loss of data
 C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\source\configs.cpp(199,75): warning C4267: 'argument': conversion from 'size_t' to 'const int', possible loss of data
+  Generating Code...
      Creating library F:\Other Games\Sekiro - Shadows Die Twice\dinput8.lib and object F:\Other Games\Sekiro - Shadows Die Twice\dinput8.exp
   SekiroDInput.vcxproj -> F:\Other Games\Sekiro - Shadows Die Twice\dinput8.dll

@@ -45,7 +45,14 @@ void ImGui::InitImGuiDX11(ID3D11Device* D3D11Device, ID3D11DeviceContext* D3D11D
     io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
     io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableGamepad;
     io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableKeyboard;
-    io.Fonts->AddFontFromFileTTF(".\\resource\\Athelas-Regular.ttf", 17.f);
+
+    ImFontConfig config;
+    config.MergeMode = true;
+    io.Fonts->AddFontFromFileTTF(".\\resource\\NotoSans.ttf", 28, NULL, io.Fonts->GetGlyphRangesDefault());
+    io.Fonts->AddFontFromFileTTF(".\\resource\\NotoSansTC-Bold.otf", 28, &config, io.Fonts->GetGlyphRangesChineseFull());
+    io.Fonts->AddFontFromFileTTF(".\\resource\\NotoSansSC-Bold.otf", 28, &config, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+    io.Fonts->AddFontFromFileTTF(".\\resource\\NotoSansKR-Bold.otf", 28, &config, io.Fonts->GetGlyphRangesKorean());
+    io.Fonts->AddFontFromFileTTF(".\\resource\\NotoSansThai-Bold.ttf", 28, &config, io.Fonts->GetGlyphRangesThai());
 
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowRounding = 2;
