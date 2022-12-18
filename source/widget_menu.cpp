@@ -10,10 +10,11 @@ std::vector<std::string> WidgetMenu::CombatArtNames;
 unsigned int WidgetMenu::GetRealIDFromMenuID(uintptr_t menuID)
 {
     uint64_t EquipInventoryDataPtr = Hooks::GetEquipInventoryData();
+
     if (!EquipInventoryDataPtr)
         return 0;
 
-    for (unsigned realID = 5000; realID < 10000; realID += 100)
+    for (unsigned realID = COMBAT_ART_MIN; realID < COMBAT_ART_MAX; realID += 100)
     {
         uintptr_t bMenuID = Hooks::GetMenuID(EquipInventoryDataPtr + 0x10, &realID);
         if (bMenuID == menuID)
@@ -21,29 +22,6 @@ unsigned int WidgetMenu::GetRealIDFromMenuID(uintptr_t menuID)
     }
 
     return 0;
-}
-
-std::string WidgetMenu::GetNameFromRealID(unsigned realID)
-{
-    if (realID == 5000 || realID == 110000) //returns <?null?> so override with "Empty"
-        return "EMPTY";
-
-    uint64_t msgRepository = *reinterpret_cast<uint64_t*>(0x143D964C8);
-    if (!msgRepository)
-        return "EMPTY";
-
-    uint64_t txtPtr = reinterpret_cast<uint64_t>(Hooks::GetItemName(msgRepository, realID));
-    if (txtPtr == 0)
-        return "EMPTY";
-
-    std::wstring stringToConvert = std::wstring(reinterpret_cast<const wchar_t*>(txtPtr));
-    if (stringToConvert.empty()) return std::string();
-
-    int strSize = WideCharToMultiByte(CP_UTF8, 0, &stringToConvert[0], (int)stringToConvert.size(), NULL, 0, NULL, NULL);
-
-    std::string convertedString(strSize, 0);
-    WideCharToMultiByte(CP_UTF8, 0, &stringToConvert[0], (int)stringToConvert.size(), &convertedString[0], strSize, NULL, NULL);
-    return convertedString;
 }
 
 void WidgetMenu::UpdateCombatArtNames()
@@ -60,7 +38,7 @@ void WidgetMenu::UpdateCombatArtNames()
 
         unsigned realID = GetRealIDFromMenuID(CAFunctions::CombatArts[i]);
         if (realID != 0)
-            CombatArtNames[i] = nameBase + GetNameFromRealID(realID);
+            CombatArtNames[i] = nameBase + Hooks::GetNameFromRealID(realID);
         else
             CombatArtNames[i] = nameBase + "EMPTY";
     }
@@ -69,6 +47,9 @@ void WidgetMenu::UpdateCombatArtNames()
 void WidgetMenu::ShowWidgetMenu()
 {
     if (WidgetSettings.widgetMode == 0)
+        return;
+
+    if (SelectionMenu::IsMenuOpen)
         return;
 
     if (!Hooks::IsGameLoaded())
@@ -101,17 +82,17 @@ void WidgetMenu::ShowWidgetMenu()
 
         if (WidgetSettings.widgetPosition == 0)
         {
-            ImVec2 widgetPos = ImGui::GetScaledScreenCoord(ImVec2(1490, 120));
+            ImVec2 widgetPos = ImGui::GetScaledScreenCoord(ImVec2(1490.f, 120.f));
             ImGui::SetNextWindowPos(widgetPos, ImGuiCond_Always);
         }
         else if (WidgetSettings.widgetPosition == 1)
         {
-            ImVec2 widgetPos = ImGui::GetScaledScreenCoord(ImVec2(1515, WidgetSettings.widgetMode > 3 ? 1015 : 1030));
+            ImVec2 widgetPos = ImGui::GetScaledScreenCoord(ImVec2(1515.f, WidgetSettings.widgetMode > 3 ? 1015.f : 1030.f));
             ImGui::SetNextWindowPos(widgetPos, ImGuiCond_Always);
         }
         else
         {
-            ImVec2 widgetPos = ImGui::GetScaledScreenCoord(ImVec2(250, WidgetSettings.widgetMode > 2 ? 912 : 912));
+            ImVec2 widgetPos = ImGui::GetScaledScreenCoord(ImVec2(250.f, WidgetSettings.widgetMode > 2 ? 912.f : 912.f));
             ImGui::SetNextWindowPos(widgetPos, ImGuiCond_Always);
         }
 
@@ -133,7 +114,7 @@ void WidgetMenu::ShowWidgetMenu()
         else if (WidgetSettings.widgetMode == 2 || WidgetSettings.widgetMode == 4)
         {
             unsigned realID = GetRealIDFromMenuID(currentMenuID);
-            std::string artName = GetNameFromRealID(realID);
+            std::string artName = Hooks::GetNameFromRealID(realID);
 
             if (WidgetSettings.showHotkeys)
             {
@@ -164,7 +145,7 @@ void WidgetMenu::ShowWidgetMenu()
                     }
                     else
                     {
-                        ImGui::Text("     ");
+                        ImGui::Text("   ");
                         ImDrawList* drawList = ImGui::GetForegroundDrawList();
                         ImVec4 circleColor = CAFunctions::CombatArts[i] == currentMenuID ? WidgetSettings.widgetColor == 1 ? ImVec4(0.51f, 0.251f, 0.196f, 1.f) : ImGui::GetCurrentContext()->Style.Colors[ImGuiCol_Text] : WidgetSettings.widgetMode == 4 ? ImVec4(0.247f, 0.255f, 0.251f, 1.f) : ImGui::GetCurrentContext()->Style.Colors[ImGuiCol_TextDisabled];
                         ImVec2 circlePos = ImGui::TableGetCellBgRect(ImGui::GetCurrentTable(), i).GetCenter();

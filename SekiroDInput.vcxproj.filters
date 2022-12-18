@@ -120,6 +120,9 @@
     <ClInclude Include="headers\prosthetics.h">
       <Filter>Functionality</Filter>
     </ClInclude>
+    <ClInclude Include="headers\selection_menu.h">
+      <Filter>ImGui Menus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -190,6 +193,9 @@
     </ClCompile>
     <ClCompile Include="source\prosthetics.cpp">
       <Filter>Functionality</Filter>
+    </ClCompile>
+    <ClCompile Include="source\selection_menu.cpp">
+      <Filter>ImGui Menus</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

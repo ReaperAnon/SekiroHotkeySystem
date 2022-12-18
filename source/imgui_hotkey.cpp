@@ -1,5 +1,7 @@
 #include <imgui_hotkey.h>
 
+bool ImGui::IsHotkeyBeingSet = false;
+
 const char* const KeyNames[]
 {
 	"Tab",
@@ -236,6 +238,7 @@ bool ImGui::Hotkey(const char* label, Input::ImGuiKeySet* keysToSet, const ImVec
 	bool wasChanged = false;
 	if (imguiContext.ActiveId == id)
 	{
+		IsHotkeyBeingSet = true;
 		Input::ImGuiKeySet newKeys = { ImGuiKey_None, ImGuiKey_None };
 		for (int keyID = ImGuiKey_NamedKey_BEGIN; keyID < ImGuiKey_NamedKey_BEGIN + 136; keyID++)
 		{
@@ -262,6 +265,7 @@ bool ImGui::Hotkey(const char* label, Input::ImGuiKeySet* keysToSet, const ImVec
 					if(newKeys.key1 == ImGuiKey_MouseLeft || newKeys.key2 == ImGuiKey_MouseLeft || newKeys.key1 == ImGuiKey_Space || newKeys.key2 == ImGuiKey_Space || newKeys.key1 == ImGuiKey_NavGamepadActivate || newKeys.key2 == ImGuiKey_NavGamepadActivate)
 						focusReleasedWithNav = true;
 
+					IsHotkeyBeingSet = false;
 					*keysToSet = newKeys;
 					wasChanged = true;
 					ClearActiveID();
@@ -270,6 +274,7 @@ bool ImGui::Hotkey(const char* label, Input::ImGuiKeySet* keysToSet, const ImVec
 			else if (keyStates[keyID - 512]) // if one key was pressed and released
 			{
 				newKeys.key1 = (ImGuiKey)keyID;
+				IsHotkeyBeingSet = false;
 				*keysToSet = newKeys;
 				wasChanged = true;
 				ClearActiveID();
@@ -280,6 +285,7 @@ bool ImGui::Hotkey(const char* label, Input::ImGuiKeySet* keysToSet, const ImVec
 		{
 			keysToSet->key1 = ImGuiKey_None;
 			keysToSet->key2 = ImGuiKey_None;
+			IsHotkeyBeingSet = false;
 			wasChanged = true;
 			ClearActiveID();
 		}
@@ -294,6 +300,108 @@ bool ImGui::Hotkey(const char* label, Input::ImGuiKeySet* keysToSet, const ImVec
 		displayName = "<PRESS A KEY>";
 	else
 		displayName = GetKeyName(*keysToSet);
+
+	const ImRect clip_rect(frame_bb.Min.x, frame_bb.Min.y, frame_bb.Min.x + size.x, frame_bb.Min.y + size.y); // Not using frame_bb.Max because we have adjusted size
+	ImVec2 render_pos = frame_bb.Min + style.FramePadding;
+	ImGui::RenderTextClipped(frame_bb.Min + style.FramePadding, frame_bb.Max - style.FramePadding, displayName.c_str(), NULL, NULL, style.ButtonTextAlign, &clip_rect);
+
+	if (label_size.x > 0)
+		ImGui::RenderText(ImVec2(total_bb.Min.x, frame_bb.Min.y + style.FramePadding.y), label);
+
+	if (wasChanged)
+	{
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+		if (!isMouseActivation)
+			imguiContext.NavDisableHighlight = false;
+		isMouseActivation = false;
+	}
+
+	return wasChanged;
+}
+
+bool ImGui::Hotkey(const char* label, ImGuiKey* keyToSet, const ImVec2& size_arg)
+{
+	ImGuiWindow* window = GetCurrentWindow();
+	if (window->SkipItems)
+		return false;
+
+	ImGuiIO& io = GetIO();
+	ImGuiContext& imguiContext = *GetCurrentContext();
+	const ImGuiStyle& style = imguiContext.Style;
+
+	const ImGuiID id = window->GetID(label);
+	const ImVec2 label_size = ImGui::CalcTextSize(label, NULL, true);
+	ImVec2 size = ImGui::CalcItemSize(size_arg, ImGui::CalcItemWidth(), label_size.y + style.FramePadding.y * 2.0f);
+	const ImRect frame_bb(window->DC.CursorPos + ImVec2(label_size.x + style.ItemInnerSpacing.x, 0.0f), window->DC.CursorPos + size);
+	const ImRect total_bb(window->DC.CursorPos, frame_bb.Max);
+
+	ImGui::ItemSize(total_bb, style.FramePadding.y);
+	if (!ImGui::ItemAdd(total_bb, id))
+		return false;
+
+	static bool keyStates[ImGuiKey_NamedKey_COUNT];
+
+	static bool isMouseActivation = false;
+	static bool focusReleasedWithNav = false;
+	const bool hovered = ItemHoverable(frame_bb, id);
+	if (imguiContext.ActiveId != id && (hovered || imguiContext.NavId == id))
+	{
+		if (hovered)
+			imguiContext.NavId = id;
+
+		const bool pressed = KeyPressBehavior(hovered, imguiContext.NavId == id, &focusReleasedWithNav, &isMouseActivation);
+		if (pressed)
+		{
+			ImGui::SetActiveID(id, window);
+			ImGui::FocusWindow(window);
+			memset(keyStates, 0, sizeof(keyStates));
+			io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableGamepad;
+			io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableKeyboard;
+		}
+	}
+
+	bool wasChanged = false;
+	if (imguiContext.ActiveId == id)
+	{
+		IsHotkeyBeingSet = true;
+		for (int keyID = ImGuiKey_NamedKey_BEGIN; keyID < ImGuiKey_NamedKey_BEGIN + 136; keyID++)
+		{
+			if (IsKeyDown((ImGuiKey)keyID))
+			{
+				if (keyStates[keyID - 512]) // skip button if it was already marked as pressed
+					continue;
+
+				keyStates[keyID - 512] = 1;
+			}
+			else if (keyStates[keyID - 512]) // if one key was pressed and released
+			{
+				*keyToSet = (ImGuiKey)keyID;
+				IsHotkeyBeingSet = false;
+				wasChanged = true;
+				ClearActiveID();
+			}
+		}
+
+		if (IsKeyDown(ImGuiKey_Escape)) // remove bound key if escape was pressed
+		{
+			*keyToSet = ImGuiKey_None;
+			IsHotkeyBeingSet = false;
+			wasChanged = true;
+			ClearActiveID();
+		}
+	}
+
+	// Render
+	RenderNavHighlight(total_bb, id);
+	ImGui::RenderFrame(frame_bb.Min, frame_bb.Max, ImGui::GetColorU32(ImVec4(0.20f, 0.25f, 0.30f, 1.0f)), true, style.FrameRounding);
+
+	Input::ImGuiKeySet keySet = { *keyToSet , ImGuiKey_None };
+	std::string displayName = "None";
+	if (imguiContext.ActiveId == id)
+		displayName = "<PRESS A KEY>";
+	else
+		displayName = GetKeyName(keySet);
 
 	const ImRect clip_rect(frame_bb.Min.x, frame_bb.Min.y, frame_bb.Min.x + size.x, frame_bb.Min.y + size.y); // Not using frame_bb.Max because we have adjusted size
 	ImVec2 render_pos = frame_bb.Min + style.FramePadding;

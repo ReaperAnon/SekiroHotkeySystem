@@ -28,14 +28,16 @@ void UnhookConsole()
     }
 }
 
-void HookThread(void* args)
+void HookThread()
 {
     LoadDll();
-    MH_Initialize();
 
     Sleep(10000);
 
-    // HookConsole();
+    MH_Initialize();
+#ifdef HOTKEYS_DEBUG
+    HookConsole();
+#endif
     Input::InitInputProcessing();
     DXGI::HookDXGI();
     Hooks::HookFunctions();
@@ -49,7 +51,8 @@ void LoadDll()
     if (wcslen(dllPath) > 0)
     {
         DInput8DLL = LoadLibrary(dllPath);
-        DirectInput8CreateOrig = (tDirectInput8Create)GetProcAddress(DInput8DLL, "DirectInput8Create");
+        if(DInput8DLL != 0)
+            DirectInput8CreateOrig = (tDirectInput8Create)GetProcAddress(DInput8DLL, "DirectInput8Create");
     }
 
     if (DirectInput8CreateOrig == nullptr)
@@ -57,7 +60,8 @@ void LoadDll()
         GetSystemDirectory(dllPath, MAX_PATH);
         wcscat_s(dllPath, L"\\dinput8.dll");
         DInput8DLL = LoadLibrary(dllPath);
-        DirectInput8CreateOrig = (tDirectInput8Create)GetProcAddress(DInput8DLL, "DirectInput8Create");
+        if (DInput8DLL != 0)
+            DirectInput8CreateOrig = (tDirectInput8Create)GetProcAddress(DInput8DLL, "DirectInput8Create");
     }
 }
 
@@ -66,11 +70,13 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD callReason, LPVOID lpReserved)
     switch (callReason)
     {
         case DLL_PROCESS_ATTACH:
-            DisableThreadLibraryCalls(hModule);
-            _beginthread(HookThread, 0, nullptr);
-        break;
+        {
+            std::thread(HookThread).detach();
+            break;
+        }
 
         case DLL_PROCESS_DETACH:
+        {
             Profiles::UninitProfileManager();
             Input::UninitInputProcessing();
             DXGI::UnhookDXGI();
@@ -78,7 +84,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD callReason, LPVOID lpReserved)
 
             MH_DisableHook(MH_ALL_HOOKS);
             MH_Uninitialize();
-        break;
+            break;
+        }
     }
 
     return TRUE;

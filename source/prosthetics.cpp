@@ -2,7 +2,15 @@
 
 int SkillEquipData[17];
 
-int ProstheticFunctions::ProstheticSetSize;
+int ProstheticFunctions::ProstheticUsageMode = 0;
+
+bool ProstheticFunctions::UseWhileBlocking = false;
+
+bool ProstheticFunctions::UseWhileInAir = false;
+
+bool ProstheticFunctions::UseOnRepeat = false;
+
+int ProstheticFunctions::ProstheticSetSize = 0;
 
 std::vector<ProstheticFunctions::ProstheticSet> ProstheticFunctions::ProstheticSets;
 
@@ -24,6 +32,35 @@ void ProstheticFunctions::ClearEquipmentSlots()
 
 
 // Prosthetic Functions
+void ProstheticFunctions::PerformProstheticAttack(bool wasChanged)
+{
+    Input::SekiroInputAction prostheticAction = Input::SIA_UseProsthetic;
+    if (ProstheticUsageMode == 1 || (UseOnRepeat && !wasChanged))
+    {
+        Input::AddLongPressInput(&prostheticAction);
+        return;
+    }
+
+    if (UseWhileBlocking)
+    {
+        if (Input::IsInputActive(Input::SIA_Block))
+        {
+            Input::AddLongPressInput(&prostheticAction);
+            return;
+        }
+    }
+
+    if (UseWhileInAir)
+    {
+        bool isInAir = *reinterpret_cast<byte*>(Hooks::GetInputHandler() + 0x249) & 2;
+        if (isInAir)
+        {
+            Input::AddLongPressInput(&prostheticAction);
+            return;
+        }
+    }
+}
+
 bool ProstheticFunctions::IsIDInvalid(unsigned menuID)
 {
     return menuID == 0x100 || menuID == 0x102 || menuID == 0x104;
@@ -32,7 +69,7 @@ bool ProstheticFunctions::IsIDInvalid(unsigned menuID)
 void ProstheticFunctions::TrySelectProsthetics(void* idx)
 {
     if (!IsProstheticThreadRunning)
-        _beginthread(QueueSelectProsthetics, 0, idx);
+        std::thread(QueueSelectProsthetics, idx).detach();
 }
 
 void ProstheticFunctions::QueueSelectProsthetics(void* idx)
@@ -42,7 +79,7 @@ void ProstheticFunctions::QueueSelectProsthetics(void* idx)
     while (!SelectProstheticGroup(idx, &wasChanged))
         Sleep(100);
 
-    if (wasChanged)
+    /*if (wasChanged)
     {
         Sleep(50);
         short currIdx = *reinterpret_cast<byte*>(Hooks::GetSkillBase() + 0xA4);
@@ -53,7 +90,7 @@ void ProstheticFunctions::QueueSelectProsthetics(void* idx)
         Hooks::SetEquippedProsthetic(*reinterpret_cast<uint64_t**>(Hooks::GetCharacterBase() + 0x10), 0, currIdx);
         Input::SekiroInputAction switchProsthetic = Input::SIA_SwitchProsthetic;
         Input::AddSinglePressInput(&switchProsthetic);
-    }
+    }*/
 
     IsProstheticThreadRunning = false;
 }
@@ -119,28 +156,30 @@ bool ProstheticFunctions::SelectProstheticGroup(void* idx, bool* wasChanged)
 
 void ProstheticFunctions::SelectProsthetic(void* idx)
 {
+    bool wasChanged = false;
     uint64_t skillBase = Hooks::GetSkillBase();
     if (Hooks::IsInMenu() || skillBase == 0) // exit if not in-game
         return;
 
     short index = *reinterpret_cast<short*>(idx);
-    unsigned currentMenuID1 = *reinterpret_cast<unsigned*>(skillBase + 0x24);
-    unsigned currentMenuID2 = *reinterpret_cast<unsigned*>(skillBase + 0x2C);
-    unsigned currentMenuID3 = *reinterpret_cast<unsigned*>(skillBase + 0x34);
+    short currIndex = *reinterpret_cast<short*>(skillBase + 0xA4);
+    if (currIndex != index)
+    {
+        unsigned currentMenuID1 = *reinterpret_cast<unsigned*>(skillBase + 0x24);
+        unsigned currentMenuID2 = *reinterpret_cast<unsigned*>(skillBase + 0x2C);
+        unsigned currentMenuID3 = *reinterpret_cast<unsigned*>(skillBase + 0x34);
 
-    if (index == 0 && IsIDInvalid(currentMenuID1))
-        return;
-    if (index == 1 && IsIDInvalid(currentMenuID2))
-        return;
-    if (index == 2 && IsIDInvalid(currentMenuID3))
-        return;
+        if (index == 0 && IsIDInvalid(currentMenuID1))
+            return;
+        if (index == 1 && IsIDInvalid(currentMenuID2))
+            return;
+        if (index == 2 && IsIDInvalid(currentMenuID3))
+            return;
 
-    index -= 1;
-    if (index < 0)
-        index = 2;
+        uint64_t characterBase = Hooks::GetCharacterBase();
+        Hooks::SetEquippedProsthetic(*reinterpret_cast<uint64_t**>(characterBase + 0x10), 0, index);
+        wasChanged = true;
+    }
 
-    uint64_t characterBase = Hooks::GetCharacterBase();
-    Hooks::SetEquippedProsthetic(*reinterpret_cast<uint64_t**>(characterBase + 0x10), 0, index);
-    Input::SekiroInputAction switchProsthetic = Input::SIA_SwitchProsthetic;
-    Input::AddSinglePressInput(&switchProsthetic);
+    PerformProstheticAttack(wasChanged);
 }

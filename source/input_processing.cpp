@@ -8,11 +8,13 @@ Input::ImGuiKeySet Input::ProstheticKeys[3];
 
 Input::ImGuiKeySet Input::CombatArtKey;
 
+ImGuiKey Input::EquipmentModifierKey;
+
 std::vector<Input::GameKey*> Input::MenuKeys;
 
 std::vector<Input::GameKey*> Input::GameKeys;
 
-HWND Input::PROCHWND;
+HWND Input::PROCHWND = 0;
 
 bool InputBlocks[ImGuiKey_NamedKey_COUNT];
 
@@ -23,9 +25,11 @@ void Input::InitInputProcessing()
 {
     IsInputLoaded = true;
     EnumWindows(WorkerProc, 0);
+#ifdef HOTKEYS_DEBUG
     std::cout << "Sekiro HWND: " << std::hex << PROCHWND << "\n";
+#endif
     ImGui::InitImGuiWin32();
-    _beginthread(InputProcessThread, NULL, nullptr);
+    std::thread(InputProcessThread).detach();
 }
 
 void Input::UninitInputProcessing()
@@ -33,7 +37,7 @@ void Input::UninitInputProcessing()
     IsInputLoaded = false;
 }
 
-void Input::InputProcessThread(void* args)
+void Input::InputProcessThread()
 {
     while (IsInputLoaded)
     {
@@ -78,7 +82,6 @@ void Input::ProcessInputArray(std::vector<Input::GameKey*>* inputArray)
                 gameKey->PerformReleaseAction(gameKey->ReleaseArgs);
         }
     }
-
 }
 
 void Input::ProcessKeyEvents()
@@ -86,11 +89,15 @@ void Input::ProcessKeyEvents()
     if (GetForegroundWindow() != Input::PROCHWND)
         return;
 
+    if (ImGui::IsHotkeyBeingSet)
+        return;
+
     if (!Hooks::IsGameLoaded())
         return;
 
-    ProcessInputArray(&MenuKeys);
-
+    if(Hooks::IsInMenu())
+        ProcessInputArray(&MenuKeys);
+    
     if (ConfigMenu::IsConfigOpen())
         return;
 

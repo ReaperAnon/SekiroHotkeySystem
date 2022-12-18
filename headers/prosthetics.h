@@ -14,6 +14,14 @@ namespace ProstheticFunctions
         unsigned slotThree;
     };
 
+    extern int ProstheticUsageMode;
+
+    extern bool UseWhileBlocking;
+
+    extern bool UseWhileInAir;
+
+    extern bool UseOnRepeat;
+
     extern int ProstheticSetSize;
 
 	extern std::vector<ProstheticSet> ProstheticSets;
@@ -21,6 +29,8 @@ namespace ProstheticFunctions
     void PerformArraySetup(const int length);
 
     void ClearEquipmentSlots();
+
+    void PerformProstheticAttack(bool wasChanged);
 
     bool IsIDInvalid(unsigned menuID);
 

@@ -15,7 +15,8 @@ namespace Input
         SIA_CombatArt = 5,
         SIA_Jump = 16,
         SIA_SwitchProsthetic = 1024,
-        SIA_Dodge = 8192
+        SIA_Dodge = 8192,
+        SIA_UseProsthetic = 1074003970
     };
 
     bool IsInputActive(SekiroInputAction input);
@@ -27,6 +28,8 @@ namespace Input
     void RemoveLongPressInput(void* input);
 
     void RemoveSpecialModeInputs(void* input);
+
+    void RemoveProstheticInputs(void* input);
 
     uintptr_t ProcessInputsHook(uint64_t inputHandler, uint64_t a2);
 }

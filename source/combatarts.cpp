@@ -1,8 +1,14 @@
 #include <combatarts.h>
 
-int CAFunctions::CAUsageMode;
+int CAFunctions::CAUsageMode = 0;
 
-int CAFunctions::CombatArtSize;
+bool CAFunctions::UseWhileBlocking = false;
+
+bool CAFunctions::UseWhileInAir = false;
+
+bool CAFunctions::UseOnRepeat = false;
+
+int CAFunctions::CombatArtSize = 0;
 
 std::vector<unsigned> CAFunctions::CombatArts;
 
@@ -36,44 +42,40 @@ void CAFunctions::ClearEquipmentSlots()
 
 
 // Combat Art Functionality
-void CAFunctions::PerformArt()
+void CAFunctions::PerformArt(bool wasChanged)
 {
     Input::SekiroInputAction attackAction = Input::SIA_Attack;
     Input::SekiroInputAction combatArtAction = Input::SIA_CombatArt;
-    if (CAUsageMode == 4)
+    if (CAUsageMode == 1 || (UseOnRepeat && !wasChanged))
+    {
+        Input::AddLongPressInput(&combatArtAction);
+        return;
+    }
+
+    if (UseWhileBlocking)
     {
         if (Input::IsInputActive(Input::SIA_Block))
         {
             Input::AddLongPressInput(&attackAction);
-        }
-        else
-        {
-            bool isInAir = *reinterpret_cast<byte*>(Hooks::GetInputHandler() + 0x249) & 2;
-            if (isInAir)
-                Input::AddLongPressInput(&combatArtAction);
+            return;
         }
     }
-    else if (CAUsageMode == 3)
-    {
-        if (Input::IsInputActive(Input::SIA_Block))
-            Input::AddLongPressInput(&attackAction);
-    }
-    else if (CAUsageMode == 2)
+
+    if (UseWhileInAir)
     {
         bool isInAir = *reinterpret_cast<byte*>(Hooks::GetInputHandler() + 0x249) & 2;
         if (isInAir)
+        {
             Input::AddLongPressInput(&combatArtAction);
-    }
-    else if (CAUsageMode == 1)
-    {
-        Input::AddLongPressInput(&combatArtAction);
+            return;
+        }
     }
 }
 
 void CAFunctions::TrySelectCombatArt(void* idx)
 {
     if (!IsCombatArtThreadRunning)
-        _beginthread(QueueSelectCombatArt, 0, idx);
+        std::thread(QueueSelectCombatArt, idx).detach();
 }
 
 void CAFunctions::QueueSelectCombatArt(void* idx)
@@ -103,22 +105,19 @@ bool CAFunctions::SelectCombatArt(void* idx)
     }
     else
     {
+        bool wasChanged = false;
         if (currentMenuID != CombatArts[caIdx])
         {
+            wasChanged = true;
             SkillEquipData[16] = 0;
             SkillEquipData[14] = CombatArts[caIdx];
             result = Hooks::SetSkillSlot(1, reinterpret_cast<uint64_t>(SkillEquipData), true) != 0;
             if (result)
-            {
-                PerformArt();
                 Hooks::PlayUISound(MENU_OPTIONS_CHANGE);
-            }
         }
-        else
-        {
-            PerformArt();
-            Hooks::PlayUISound(MENU_HIGHLIGHT);
-        }
+        else Hooks::PlayUISound(MENU_HIGHLIGHT);
+
+        PerformArt(wasChanged);
     }
 
     return result;

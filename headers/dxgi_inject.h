@@ -6,6 +6,7 @@
 #include <aobscanner.h>
 #include <MinHook.h>
 #include <imgui_main.h>
+#include <dllmain.h>
 
 namespace DXGI
 {

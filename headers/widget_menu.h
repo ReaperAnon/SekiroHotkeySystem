@@ -8,6 +8,7 @@
 #include <functions.h>
 #include <combatarts.h>
 #include <imgui_hotkey.h>
+#include <selection_menu.h>
 
 namespace WidgetMenu
 {
@@ -17,8 +18,6 @@ namespace WidgetMenu
 
 
 	unsigned int GetRealIDFromMenuID(uintptr_t menuID);
-
-	std::string GetNameFromRealID(unsigned realID);
 
 	void UpdateCombatArtNames();
 

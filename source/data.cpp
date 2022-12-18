@@ -104,3 +104,117 @@ bool Hooks::IsGameLoaded()
 
     return *reinterpret_cast<bool*>(MenuEntity + 0x248) && WorldEntity;
 }
+
+std::vector<unsigned> Hooks::GetCombatArts()
+{
+    uint64_t EquipInventoryDataPtr = GetEquipInventoryData();
+    std::vector<unsigned> retVal;
+
+    if (!EquipInventoryDataPtr)
+        return retVal;
+
+    for (unsigned realID = COMBAT_ART_MIN; realID < COMBAT_ART_MAX; realID += 100)
+    {
+        uint64_t menuID = GetMenuID(EquipInventoryDataPtr + 0x10, &realID);
+        if (menuID != 0xFFFFFFFF)
+            retVal.push_back(menuID);
+    }
+
+    return retVal;
+}
+
+std::vector<unsigned> Hooks::GetProstheticTools()
+{
+    uint64_t EquipInventoryDataPtr = GetEquipInventoryData();
+    std::vector<unsigned> retVal;
+
+    if (!EquipInventoryDataPtr)
+        return retVal;
+
+    for (unsigned realID = PROSTHETIC_MIN; realID < PROSTHETIC_MAX; realID += 100)
+    {
+        uint64_t menuID = GetMenuID(EquipInventoryDataPtr + 0x10, &realID);
+        if (menuID != 0xFFFFFFFF)
+            retVal.push_back(menuID);
+    }
+
+    return retVal;
+}
+
+void Hooks::GetCombatArtEquipSet(int idx)
+{
+    uint64_t EquipInventoryDataPtr = GetEquipInventoryData();
+
+    SelectionMenu::EquipEntries.clear();
+    if (!EquipInventoryDataPtr)
+        return;
+
+    for (unsigned realID = COMBAT_ART_MIN + 100; realID < COMBAT_ART_MAX; realID += 100)
+    {
+        uint64_t menuID = GetMenuID(EquipInventoryDataPtr + 0x10, &realID);
+        if (menuID != 0xFFFFFFFF && menuID != CAFunctions::CombatArts[idx])
+            SelectionMenu::EquipEntries.push_back(SelectionMenu::EquipEntry{ GetNameFromRealID(realID), realID, menuID });
+    }
+}
+
+void Hooks::GetProstheticEquipSet()
+{
+    uint64_t EquipInventoryDataPtr = GetEquipInventoryData();
+
+    SelectionMenu::EquipEntries.clear();
+    if (!EquipInventoryDataPtr)
+        return;
+
+    for (unsigned realID = PROSTHETIC_MIN; realID < PROSTHETIC_MAX; realID += 100)
+    {
+        uint64_t menuID = GetMenuID(EquipInventoryDataPtr + 0x10, &realID);
+        if (menuID != 0xFFFFFFFF)
+            SelectionMenu::EquipEntries.push_back(SelectionMenu::EquipEntry{ GetNameFromRealID(realID), realID, menuID });
+    }
+}
+
+std::string Hooks::GetNameFromRealID(unsigned realID)
+{
+    if (realID == 5000 || realID == 110000) //returns <?null?> so override with "Empty"
+        return "EMPTY";
+
+    uint64_t msgRepository = *reinterpret_cast<uint64_t*>(0x143D964C8);
+    if (!msgRepository)
+        return "EMPTY";
+
+    uint64_t txtPtr = reinterpret_cast<uint64_t>(GetItemName(msgRepository, realID));
+    if (txtPtr == 0)
+        return "EMPTY";
+
+    std::wstring stringToConvert = std::wstring(reinterpret_cast<const wchar_t*>(txtPtr));
+    if (stringToConvert.empty()) return std::string();
+
+    int strSize = WideCharToMultiByte(CP_UTF8, 0, &stringToConvert[0], (int)stringToConvert.size(), NULL, 0, NULL, NULL);
+
+    std::string convertedString(strSize, 0);
+    WideCharToMultiByte(CP_UTF8, 0, &stringToConvert[0], (int)stringToConvert.size(), &convertedString[0], strSize, NULL, NULL);
+    return convertedString;
+}
+
+
+#ifdef HOTKEYS_DEBUG
+void Hooks::PrintIDs(void *)
+{
+    uint64_t EquipInventoryDataPtr = GetEquipInventoryData();
+
+    if (!EquipInventoryDataPtr)
+        return;
+
+    std::vector<unsigned> ids;
+    for (unsigned realID = COMBAT_ART_MIN; realID < COMBAT_ART_MAX; realID += 100)
+    {
+        uintptr_t bMenuID = GetMenuID(EquipInventoryDataPtr + 0x10, &realID);
+        ids.push_back(bMenuID);
+    }
+
+    std::cout << "\n";
+    for (const auto& id : ids)
+        std::cout << id << " ";
+    std::cout << "\n";
+}
+#endif

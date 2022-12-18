@@ -36,6 +36,7 @@
     <ClInclude Include="headers\MinHook.h" />
     <ClInclude Include="headers\profiles.h" />
     <ClInclude Include="headers\prosthetics.h" />
+    <ClInclude Include="headers\selection_menu.h" />
     <ClInclude Include="headers\widget_menu.h" />
     <ClInclude Include="headers\wndproc.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -70,6 +71,7 @@
     <ClCompile Include="source\input_processing.cpp" />
     <ClCompile Include="source\profiles.cpp" />
     <ClCompile Include="source\prosthetics.cpp" />
+    <ClCompile Include="source\selection_menu.cpp" />
     <ClCompile Include="source\widget_menu.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -149,6 +151,9 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -168,6 +173,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -190,6 +196,9 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput;C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\imgui;C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\lib;C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -216,6 +225,9 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\imgui;C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\lib;C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\headers</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
+      <Optimization>MaxSpeed</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -227,6 +239,7 @@
       <AdditionalDependencies>MinHook.x64.lib;d3d11.lib;d3dcompiler.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AddModuleNamesToAssembly>
       </AddModuleNamesToAssembly>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

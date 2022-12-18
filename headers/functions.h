@@ -5,6 +5,7 @@
 #include <profiles.h>
 #include <imgui_main.h>
 #include <input_injection.h>
+#include <dllmain.h>
 
 #define FASTCALL __fastcall*
 
@@ -37,6 +38,9 @@ namespace Hooks
 	typedef uint64_t(FASTCALL tGetItemMenuID)(uint64_t EquipInventoryDataPtr, unsigned* realID);
 		extern tGetItemMenuID GetMenuID;
 
+	typedef uint64_t(FASTCALL tGetIconID)(uint64_t EquipInventoryDataPtrPlus0x10, unsigned* realID);
+		extern tGetIconID GetIconID;
+
 
 	// Hooked Functions
 	typedef uint64_t(FASTCALL tProcessInputs)(uint64_t inputProcessBase, uint64_t arg2);
@@ -48,16 +52,25 @@ namespace Hooks
 		extern tDeleteSave DeleteSaveOrig;
 
 	typedef bool (FASTCALL tIsMenuInputActive)(uint64_t arg1, float arg2);
-		extern tIsMenuInputActive IsMenuInputActive;
-		extern tIsMenuInputActive IsMenuInputActiveOrig;
+		extern tIsMenuInputActive RestrictUpdateUI;
+		extern tIsMenuInputActive RestrictUpdateUIOrig;
 
 	typedef bool (FASTCALL tIsMenuInputActiveNoArgs)();
-		extern tIsMenuInputActiveNoArgs IsMenuInputActiveNoArgs;
-		extern tIsMenuInputActiveNoArgs IsMenuInputActiveNoArgsOrig;
+		extern tIsMenuInputActiveNoArgs IsMenuModeActive;
+		extern tIsMenuInputActiveNoArgs IsMenuModeActiveOrig;
 
 	typedef bool (FASTCALL tParseGamepadInput)(uint64_t padDevicePtr);
 		extern tParseGamepadInput ParseGamepadInput;
 		extern tParseGamepadInput ParseGamepadInputOrig;
+
+	typedef double (FASTCALL tProcessAnalogInput)(uint64_t PadDevicePtr, int index);
+		extern tProcessAnalogInput ProcessAnalogInput;
+		extern tProcessAnalogInput ProcessAnalogInputOrig;
+
+	typedef uint64_t (FASTCALL tGetGameSpeed)(uint64_t arg1, uint64_t timePerFrame);
+		extern tGetGameSpeed GetGameSpeed;
+		extern tGetGameSpeed GetGameSpeedOrig;
+
 
 	// Unused Functions
 	// typedef uint64_t (FASTCALL tGetSlotID)(int slotIdx);

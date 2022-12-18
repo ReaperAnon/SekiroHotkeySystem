@@ -46,6 +46,18 @@ void Input::RemoveSpecialModeInputs(void* input)
     }
 }
 
+void Input::RemoveProstheticInputs(void* input)
+{
+    for (int i = longPressInputs.size() - 1; i >= 0; i--)
+    {
+        if (longPressInputs[i] == SIA_UseProsthetic)
+        {
+            longPressInputs.erase(longPressInputs.begin() + i);
+            return;
+        }
+    }
+}
+
 uint64_t Input::ProcessInputsHook(uint64_t inputHandler, uint64_t a2)
 {
     uint64_t* actionBitfield = reinterpret_cast<uint64_t*>(inputHandler + 0x10);

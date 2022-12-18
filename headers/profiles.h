@@ -18,7 +18,7 @@ namespace Profiles
 
 	void UninitProfileManager();
 
-	void ProfileManagerThread(void* args);
+	void ManageProfiles();
 
 	void DeleteProfile(unsigned slotIdx);
 

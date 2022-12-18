@@ -2,6 +2,8 @@
 
 #define FUNCWRAPPER HRESULT __declspec(dllexport) WINAPI
 
+// #define HOTKEYS_DEBUG
+
 #include <Windows.h>
 #include <imgui_main.h>
 #include <input_processing.h>
@@ -13,7 +15,7 @@
 // A pointer type for the original dinput8 dll function.
 typedef HRESULT(__stdcall* tDirectInput8Create)(HINSTANCE, DWORD, REFIID, LPVOID*, LPUNKNOWN);
 
-void HookThread(void* args);
+void HookThread();
 
 // Loads the specified chain dll or if one is not defined, the original dinput8.dll.
 void LoadDll();

@@ -1,9 +1,9 @@
 #include <dxgi_inject.h>
 
-bool IsInitialized;
-ID3D11Device* D3D11Device;
-ID3D11DeviceContext* D3D11DeviceContext;
-ID3D11RenderTargetView* D3D11RenderTargetView;
+bool IsInitialized = false;
+ID3D11Device* D3D11Device = nullptr;
+ID3D11DeviceContext* D3D11DeviceContext = nullptr;
+ID3D11RenderTargetView* D3D11RenderTargetView = nullptr;
 
 AOBScanner patternScanner(L"dxgi.dll");
 const short vTablePattern[] = { 0x90, 0x48, 0x8D, 0x05, 0x100, 0x100, 0x100, 0x100, 0x48, 0x89, 0x07 };
@@ -13,55 +13,84 @@ typedef DWORD(WINAPI* tPresent)(IDXGISwapChain* swapChain, unsigned syncInterval
     tPresent Present = nullptr;
     tPresent PresentOriginal = nullptr;
 
-/*
 const bool DXGI::HookDXGI()
 {
-    DXGI_SWAP_CHAIN_DESC desc;
-    ZeroMemory(&desc, sizeof(desc));
-    desc.BufferCount = 2;
-    desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-    desc.OutputWindow = procHWND;
-    desc.SampleDesc.Count = 1;
-    desc.Windowed = TRUE;
-    desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+    WNDCLASSEX windowClass;
+    ZeroMemory(&windowClass, sizeof(windowClass));
+    windowClass.cbSize = sizeof(WNDCLASSEX);
+    windowClass.lpszClassName = L"TempWndClass";
+    windowClass.hInstance = GetModuleHandle(NULL);
+    windowClass.style = CS_HREDRAW | CS_VREDRAW;
+    windowClass.lpfnWndProc = DefWindowProc;
+    RegisterClassEx(&windowClass);
 
-    const D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
+    HWND tempWindow = CreateWindow(windowClass.lpszClassName, L"TempDXWindow", WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, NULL, NULL, windowClass.hInstance, NULL);
+
+    DXGI_SWAP_CHAIN_DESC swapChainDesc;
+    ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
+    swapChainDesc.Windowed = TRUE;
+    swapChainDesc.BufferCount = 1;
+    swapChainDesc.SampleDesc.Count = 1;
+    swapChainDesc.OutputWindow = tempWindow;
+    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+    const D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_1 };
+
+    bool result = false;
     IDXGISwapChain* swapChainTemp = nullptr;
     ID3D11Device* D3D11DeviceTemp = nullptr;
-
-    if (SUCCEEDED(D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, featureLevels, 2, D3D11_SDK_VERSION, &desc, &swapChainTemp, &D3D11DeviceTemp, nullptr, nullptr)))
+    if (SUCCEEDED(D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, featureLevels, 2, D3D11_SDK_VERSION, &swapChainDesc, &swapChainTemp, &D3D11DeviceTemp, nullptr, nullptr)))
     {
-        void** vTable = *(void***)swapChainTemp;
+        void** vTable = *reinterpret_cast<void***>(swapChainTemp);
         Present = (tPresent)vTable[8];
         swapChainTemp->Release();
         D3D11DeviceTemp->Release();
 
-        return MH_CreateHook((LPVOID)Present, (LPVOID)PresentDetour, (LPVOID*)&PresentOriginal) == MH_OK && MH_EnableHook(Present) == MH_OK;
+#ifdef HOTKEYS_DEBUG
+        std::cout << "DXGI vTable Address: " << vTable;
+#endif
+
+        result = MH_CreateHook(Present, PresentDetour, (LPVOID*)&PresentOriginal) == MH_OK && MH_EnableHook(Present) == MH_OK;
     }
 
-    return false;
-}
-*/
+    DestroyWindow(tempWindow);
+    UnregisterClass(windowClass.lpszClassName, windowClass.hInstance);
 
+#ifdef HOTKEYS_DEBUG
+    result ? std::cout << "\nDXGI Hooked\n" : std::cout << "\nDXGI Hook Failed\n";
+#endif
+
+    return result;
+}
+
+/* FAILS IF RESHADE OR SIMILAR ARE ALSO LOADED
 const bool DXGI::HookDXGI()
 {
+    bool result = false;
     BYTE* vTableAddr = patternScanner.PerformModuleScan(vTablePattern, sizeof(vTablePattern) / sizeof(vTablePattern[0]), vTableOffset);
     if (vTableAddr)
     {
-        long ptrOffset = *(long*)(vTableAddr + 3);
-        void** vTable = (void**)(vTableAddr + ptrOffset + 7);
+        long ptrOffset = *reinterpret_cast<long*>(vTableAddr + 3);
+        void** vTable = reinterpret_cast<void**>(vTableAddr + ptrOffset + 7);
 
         Present = (tPresent)vTable[8];
-        std::cout << "DXGI vTable Address: " << vTable << "\nDXGI Hooked\n";
+#ifdef HOTKEYS_DEBUG
+        std::cout << "DXGI vTable Address: " << vTable;
+#endif
 
-        return MH_CreateHook(Present, PresentDetour, (LPVOID*)&PresentOriginal) == MH_OK && MH_EnableHook(Present) == MH_OK;
+        result = MH_CreateHook(Present, PresentDetour, (LPVOID*)&PresentOriginal) == MH_OK && MH_EnableHook(Present) == MH_OK;
     }
 
-    std::cout << "DXGI Not Hooked\n";
-    return false;
+#ifdef HOTKEYS_DEBUG
+    result ? std::cout << "\nDXGI Hooked\n" : std::cout << "\nDXGI Hook Failed\n";
+#endif
+
+    return result;
 }
+*/
 
 const void DXGI::UnhookDXGI()
 {
@@ -88,13 +117,16 @@ LONG WINAPI DXGI::PresentDetour(IDXGISwapChain* swapChain, unsigned syncInterval
             // Initialize the back buffer and create the render target where ImGui will be rendered to
             ID3D11Texture2D* backBuffer = nullptr;
             swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer);
-            D3D11Device->CreateRenderTargetView(backBuffer, NULL, &D3D11RenderTargetView);
-            backBuffer->Release();
+            if (backBuffer != nullptr)
+            {
+                D3D11Device->CreateRenderTargetView(backBuffer, NULL, &D3D11RenderTargetView);
+                backBuffer->Release();
 
-            // Initialize ImGui
-            ImGui::InitImGuiDX11(D3D11Device, D3D11DeviceContext);
+                // Initialize ImGui
+                ImGui::InitImGuiDX11(D3D11Device, D3D11DeviceContext);
 
-            IsInitialized = true;
+                IsInitialized = true;
+            }
         }
 
         return PresentOriginal(swapChain, syncInterval, flags);

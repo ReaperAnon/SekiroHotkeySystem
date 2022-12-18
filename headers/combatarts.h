@@ -11,6 +11,12 @@ namespace CAFunctions
 {
 	extern int CAUsageMode;
 
+	extern bool UseWhileBlocking;
+
+	extern bool UseWhileInAir;
+	
+	extern bool UseOnRepeat;
+
 	extern int CombatArtSize;
 
 	extern std::vector<unsigned> CombatArts;
@@ -22,7 +28,7 @@ namespace CAFunctions
 
 	void ClearEquipmentSlots();
 
-	void PerformArt();
+	void PerformArt(bool wasChanged);
 
 	void TrySelectCombatArt(void* idx);
 

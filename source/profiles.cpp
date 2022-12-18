@@ -1,6 +1,7 @@
 #include <profiles.h>
 
-bool IsLoaded;
+bool IsLoaded = false;
+
 
 uint64_t Profiles::DeleteSaveHook(uint64_t arg1, uint64_t arg2, unsigned saveSlot)
 {
@@ -19,7 +20,7 @@ unsigned Profiles::GetProfileIndex(std::filesystem::path profilePath)
 void Profiles::InitProfileManager()
 {
     IsLoaded = true;
-    _beginthread(ProfileManagerThread, 0, nullptr);
+    std::thread(ManageProfiles).detach();
 }
 
 void Profiles::UninitProfileManager()
@@ -27,7 +28,7 @@ void Profiles::UninitProfileManager()
     IsLoaded = false;
 }
 
-void Profiles::ProfileManagerThread(void* args)
+void Profiles::ManageProfiles()
 {
     while (IsLoaded)
     {
@@ -145,6 +146,31 @@ void Profiles::LoadProfile()
         }
 
         profile.close();
+
+        std::vector<unsigned> combatArts = Hooks::GetCombatArts();
+        std::vector<unsigned> prostheticTools = Hooks::GetProstheticTools();
+        for (const auto& art : CAFunctions::CombatArts)
+        {
+            if (std::find(combatArts.begin(), combatArts.end(), art) == combatArts.end())
+            {
+                CAFunctions::ClearEquipmentSlots();
+                break;
+            }
+        }
+
+        for (const auto& prosthetic : ProstheticFunctions::ProstheticSets)
+        {
+            
+            if (std::find(prostheticTools.begin(), prostheticTools.end(), prosthetic.slotOne) == prostheticTools.end() ||
+                std::find(prostheticTools.begin(), prostheticTools.end(), prosthetic.slotTwo) == prostheticTools.end() ||
+                std::find(prostheticTools.begin(), prostheticTools.end(), prosthetic.slotThree) == prostheticTools.end()
+                )
+            {
+                ProstheticFunctions::ClearEquipmentSlots();
+                break;
+            }
+        }
+
         return;
     }
 }
