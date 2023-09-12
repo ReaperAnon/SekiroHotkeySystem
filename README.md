@@ -1,7 +1,7 @@
 ![img](https://i.imgur.com/7UD9s3t.png)
 
 # Sekiro Hotkey System
-Hotkey system for Sekiro to allow seamlessly switching between moves.
+Hotkey system for Sekiro to allow seamlessly switching between combat arts and prosthetics.
 
 ## Installation
 Download the files from the release section [here](https://github.com/ReaperAnon/SekiroHotkeySystem/releases/download/main/release.7z), then place all the files in the archive into your Sekiro game folder (near where sekiro.exe is located).
@@ -20,9 +20,9 @@ Once you are in-game, when opening the pause menu you will see a button at the t
 
 I'll expand this section once I get back to the mod and clean up the configuration functionality a bit (I really just threw that together). Also going to make a more comprehensive video on how it all works, but here are a couple I made on an older version during development that should be enough for now.
 
-[![Vid1](https://img.youtube.com/vi/DObp2otd7ic/maxresdefault.jpg)](https://www.youtube.com/watch?v=DObp2otd7ic)
+[![Vid1](https://img.youtube.com/vi/DObp2otd7ic/sddefault.jpg)](https://www.youtube.com/watch?v=DObp2otd7ic)
 
-[![Vid2](https://img.youtube.com/vi/stx7W0il18c/maxresdefault.jpg)](https://www.youtube.com/watch?v=stx7W0il18c)
+[![Vid2](https://img.youtube.com/vi/stx7W0il18c/sddefault.jpg)](https://www.youtube.com/watch?v=stx7W0il18c)
 
 ## Credits
 #### tmsrise - Sharing some important functions he found so I could get the configuration menu working nicely.
