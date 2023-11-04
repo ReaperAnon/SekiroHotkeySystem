@@ -12,6 +12,8 @@
 #define PROSTHETIC_MIN 70000
 #define PROSTHETIC_MAX 100000
 
+#define PROSTHETIC_EMPTY_SLOT 256
+
 namespace Hooks
 {
 	bool IsInMenu();

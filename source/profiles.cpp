@@ -161,9 +161,12 @@ void Profiles::LoadProfile()
         for (const auto& prosthetic : ProstheticFunctions::ProstheticSets)
         {
             
-            if (std::find(prostheticTools.begin(), prostheticTools.end(), prosthetic.slotOne) == prostheticTools.end() ||
-                std::find(prostheticTools.begin(), prostheticTools.end(), prosthetic.slotTwo) == prostheticTools.end() ||
-                std::find(prostheticTools.begin(), prostheticTools.end(), prosthetic.slotThree) == prostheticTools.end()
+            if ((std::find(prostheticTools.begin(), prostheticTools.end(), prosthetic.slotOne) == prostheticTools.end() ||
+                 std::find(prostheticTools.begin(), prostheticTools.end(), prosthetic.slotTwo) == prostheticTools.end() ||
+                 std::find(prostheticTools.begin(), prostheticTools.end(), prosthetic.slotThree) == prostheticTools.end()) &&
+                 prosthetic.slotOne != PROSTHETIC_EMPTY_SLOT &&
+                 prosthetic.slotTwo != PROSTHETIC_EMPTY_SLOT &&
+                 prosthetic.slotThree != PROSTHETIC_EMPTY_SLOT
                 )
             {
                 ProstheticFunctions::ClearEquipmentSlots();
