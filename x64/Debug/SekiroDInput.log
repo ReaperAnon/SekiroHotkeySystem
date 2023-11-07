@@ -1,9 +1,0 @@
-﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(496,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
-  inputhook.cpp
-C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\source\inputhook.cpp(16,45): warning C4244: 'argument': conversion from 'WPARAM' to 'int', possible loss of data
-C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\source\inputhook.cpp(49,48): warning C4244: '=': conversion from 'DWORD' to 'short', possible loss of data
-C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\source\inputhook.cpp(82,48): warning C4244: '=': conversion from 'DWORD' to 'short', possible loss of data
-C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\source\inputhook.cpp(289,36): warning C4244: 'argument': conversion from 'WPARAM' to 'int', possible loss of data
-C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\source\inputhook.cpp(294,69): warning C4244: 'argument': conversion from 'WPARAM' to 'int', possible loss of data
-C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\source\inputhook.cpp(302,76): warning C4244: 'argument': conversion from 'WPARAM' to 'int', possible loss of data
-LINK : fatal error LNK1181: cannot open input file 'd3d11d.lib'
