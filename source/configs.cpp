@@ -97,7 +97,7 @@ void Configs::ReadConfigFile()
     Input::GameKey* openKey = new Input::GameKey({ ImGuiKey_Tab, ImGuiKey_None }, ConfigMenu::OpenConfigMenu);
     Input::MenuKeys.push_back(openKey);
 
-    Input::GameKey* openKeyGamepad = new Input::GameKey({ ImGuiKey_GamepadBack, ImGuiKey_None }, ConfigMenu::OpenConfigMenu);
+    Input::GameKey* openKeyGamepad = new Input::GameKey({ ImGuiKey_GamepadR3, ImGuiKey_None }, ConfigMenu::OpenConfigMenu);
     Input::MenuKeys.push_back(openKeyGamepad);
 
     ReloadSettings();
