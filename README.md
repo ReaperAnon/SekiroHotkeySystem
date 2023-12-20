@@ -3,6 +3,8 @@
 # Sekiro Hotkey System
 Hotkey system for Sekiro to allow seamlessly switching between combat arts and prosthetics.
 
+### [Support Discord](https://discord.gg/u4zNjc2a)
+
 ## Installation
 Download the files from the release section [here](https://github.com/ReaperAnon/SekiroHotkeySystem/releases/download/main/release.7z), then place all the files in the archive into your Sekiro game folder (near where sekiro.exe is located).
 ### If you get prompted to overwrite dinput8.dll
