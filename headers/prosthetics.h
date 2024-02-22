@@ -41,4 +41,6 @@ namespace ProstheticFunctions
     bool SelectProstheticGroup(void* idx, bool* wasChanged);
 
     void SelectProsthetic(void* idx);
+
+    void SetIndexToNonEmptySlot(void* idx);
 }

@@ -186,7 +186,7 @@ bool ConfigMenu::ShowConfigMenu()
                             ImGui::Spacing();
 
                             ImGui::Text("Combat Art Slots:");
-                            if (ImGui::SliderInt("Combat Art Hotkeys", &CAFunctions::CombatArtSize, 1, 10, CAFunctions::CombatArtSize > 1 ? "%d slots" : "%d slot", ImGuiSliderFlags_AlwaysClamp))
+                            if (ImGui::SliderInt("Combat Art Hotkeys", &CAFunctions::CombatArtSize, 1, 19, CAFunctions::CombatArtSize > 1 ? "%d slots" : "%d slot", ImGuiSliderFlags_AlwaysClamp))
                             {
                                 Input::CombatArtKeys.resize(CAFunctions::CombatArtSize);
                                 CAFunctions::PerformArraySetup(CAFunctions::CombatArtSize);
@@ -298,7 +298,7 @@ bool ConfigMenu::ShowConfigMenu()
                             ImGui::Spacing();
 
                             ImGui::Text("Prosthetic Set Slots:");
-                            if (ImGui::SliderInt("Prosthetic Set Hotkeys", &ProstheticFunctions::ProstheticSetSize, 1, 10, ProstheticFunctions::ProstheticSetSize > 1 ? "%d slots" : "%d slot", ImGuiSliderFlags_AlwaysClamp))
+                            if (ImGui::SliderInt("Prosthetic Set Hotkeys", &ProstheticFunctions::ProstheticSetSize, 1, 20, ProstheticFunctions::ProstheticSetSize > 1 ? "%d slots" : "%d slot", ImGuiSliderFlags_AlwaysClamp))
                             {
                                 Input::ProstheticSetKeys.resize(ProstheticFunctions::ProstheticSetSize);
                             }
@@ -433,6 +433,7 @@ bool ConfigMenu::ShowConfigMenu()
                                 ImGui::SetTooltip("The multiplier applied to the game's speed while the equipment select menu is open.");
                                 ImGui::EndTooltip();
                             }
+                            ImGui::EndTabItem();
                         }
 
                         if (ImGui::BeginTabItem("Config"))

@@ -194,7 +194,7 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput;C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\imgui;C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\lib;C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)imgui;$(ProjectDir)lib;$(ProjectDir)headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -204,8 +204,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput;C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\imgui;C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>MinHook.x64.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir);$(ProjectDir)imgui;$(ProjectDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>MinHook.x64.lib;d3d11.lib;d3dcompiler.lib;ucrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AddModuleNamesToAssembly>
       </AddModuleNamesToAssembly>
     </Link>
@@ -223,7 +223,7 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\imgui;C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\lib;C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\headers</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)imgui;$(ProjectDir)lib;$(ProjectDir)headers</AdditionalIncludeDirectories>
       <CallingConvention>FastCall</CallingConvention>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -235,7 +235,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\imgui;C:\Users\Reaperrz\source\repos\SekiroDInput\SekiroDInput\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\imgui;$(ProjectDir)\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>MinHook.x64.lib;d3d11.lib;d3dcompiler.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AddModuleNamesToAssembly>
       </AddModuleNamesToAssembly>

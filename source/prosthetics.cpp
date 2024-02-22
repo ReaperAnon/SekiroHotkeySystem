@@ -79,18 +79,10 @@ void ProstheticFunctions::QueueSelectProsthetics(void* idx)
     while (!SelectProstheticGroup(idx, &wasChanged))
         Sleep(100);
 
-    /*if (wasChanged)
+    if (wasChanged)
     {
-        Sleep(50);
-        short currIdx = *reinterpret_cast<byte*>(Hooks::GetSkillBase() + 0xA4);
-        currIdx -= 1;
-        if (currIdx < 0)
-            currIdx = 2;
-
-        Hooks::SetEquippedProsthetic(*reinterpret_cast<uint64_t**>(Hooks::GetCharacterBase() + 0x10), 0, currIdx);
-        Input::SekiroInputAction switchProsthetic = Input::SIA_SwitchProsthetic;
-        Input::AddSinglePressInput(&switchProsthetic);
-    }*/
+        SetIndexToNonEmptySlot(idx);
+    }
 
     IsProstheticThreadRunning = false;
 }
@@ -182,4 +174,35 @@ void ProstheticFunctions::SelectProsthetic(void* idx)
     }
 
     PerformProstheticAttack(wasChanged);
+}
+
+void ProstheticFunctions::SetIndexToNonEmptySlot(void* idx)
+{
+    short prostheticIdx = *reinterpret_cast<short*>(idx);
+    short* currIdx = reinterpret_cast<short*>(Hooks::GetSkillBase() + 0xA4);
+
+    short initialIdx = *currIdx, nextIdx = initialIdx;
+    bool isEmptySlot = true, isFirstIteration = true;
+    while (isEmptySlot)
+    {
+        isEmptySlot = false;
+        isEmptySlot |= nextIdx == 0 && PROSTHETIC_EMPTY_SLOT == ProstheticSets[prostheticIdx].slotOne;
+        isEmptySlot |= nextIdx == 1 && PROSTHETIC_EMPTY_SLOT == ProstheticSets[prostheticIdx].slotTwo;
+        isEmptySlot |= nextIdx == 2 && PROSTHETIC_EMPTY_SLOT == ProstheticSets[prostheticIdx].slotThree;
+
+        if (isFirstIteration)
+        {
+            isFirstIteration = false;
+        }
+        else if (initialIdx == nextIdx)
+        {
+            break;
+        }
+
+        nextIdx += isEmptySlot;
+
+        if (nextIdx > 2)
+            nextIdx = 0;
+    }
+    *currIdx = nextIdx;
 }
